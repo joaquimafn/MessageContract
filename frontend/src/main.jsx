@@ -4,6 +4,7 @@ import App from "./App";
 import AOS from "aos";
 import "./index.css"; // Tailwind CSS import
 import "../node_modules/aos/dist/aos.css"; // AOS CSS
+import MessageContract from "./components/MessageContract";
 
 AOS.init({
   duration: 1000,
@@ -15,6 +16,6 @@ AOS.init({
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <App />
+    <MessageContract />
   </React.StrictMode>
 );

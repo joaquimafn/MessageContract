@@ -5,14 +5,17 @@ import {Script} from "forge-std/Script.sol";
 import {console} from "forge-std/console.sol";
 import {EscrowManager} from "../contracts/EscrowManager.sol";
 import {CrowdfundingFactory} from "../contracts/CrowdfundingFactory.sol";
+import {MessageContract} from "../contracts/MessageContract.sol";
 
 contract DeployContracts is Script {
     function run() external {
-        // Use the private key directly from command line args
-        address deployer = msg.sender;
-        vm.startBroadcast();
+        // Get the private key from environment variable
+        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
+        address deployer = vm.addr(deployerPrivateKey);
 
-        // Set initial parameters  
+        vm.startBroadcast(deployerPrivateKey);
+
+        // Set initial parameters
         uint256 platformFee = 5; // 5% platform fee
         address[] memory approvers = new address[](1);
         approvers[0] = deployer; // Owner is initial approver
@@ -24,10 +27,13 @@ contract DeployContracts is Script {
             approvers,
             requiredApprovals
         );
-        
+
         // Deploy CrowdfundingFactory with EscrowManager address
-        CrowdfundingFactory factory = new CrowdfundingFactory(
-            platformFee
+        CrowdfundingFactory factory = new CrowdfundingFactory(platformFee);
+
+        // Deploy MessageContract
+        MessageContract messageContract = new MessageContract(
+            "Welcome to DecentraFund!" // initial message
         );
 
         vm.stopBroadcast();
@@ -35,5 +41,6 @@ contract DeployContracts is Script {
         // Log addresses for easy reference
         console.log("EscrowManager deployed at:", address(escrowManager));
         console.log("CrowdfundingFactory deployed at:", address(factory));
+        console.log("MessageContract deployed at:", address(messageContract));
     }
 }
